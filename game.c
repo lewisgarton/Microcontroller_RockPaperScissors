@@ -3,49 +3,73 @@
 #include "navswitch.h"
 #include "tinygl.h"
 #include "../fonts/font3x5_1.h"
+#include "button.h"
+#include "stdbool.h"
 
 #define PACER_RATE 500
 #define MESSAGE_RATE 20
 
 
 
-void matrix_init (void)
+void print_matrix (char* message)
 {
     // Initialising the led matrix scroling
-    tinygl_init (PACER_RATE);
+    
     tinygl_font_set (&font3x5_1);
     tinygl_text_speed_set (MESSAGE_RATE);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
     tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
-    pacer_init (PACER_RATE);
+    
+    tinygl_text(message);
 }
 
 
-void print_matrix (string)
+
+/*
+int game_status (int start)
 {
-    tinygl_text(string);
+    while (start == 0) {
+        pacer_wait ();
+        navswitch_update ();
+
+        if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+            start = 1;
+        }
+    }
+    return start;
 }
-
-
+*/
 
 int main (void)
 {
     system_init ();
-    matrix_init ();
-    
+    tinygl_init (PACER_RATE);
+    pacer_init (PACER_RATE);
     
     // Initialising the nav switch
-    navswitch_init();
 
-    print_matrix("HELLO");
-    
-    while (1)
-    {
+    navswitch_init ();
+
+
+    char* scroll_screen = "PRESS NAV BUTTON";
+
+/*
+    // checking the game status
+    int start = 0;
+    start = game_status(start);
+*/
+
+    print_matrix(scroll_screen);
+
+    while (1) {
+        
+        
         pacer_wait();
-        tinygl_update ();
+        tinygl_update();
         navswitch_update ();
+       
         
-        
+
 
     }
 }
