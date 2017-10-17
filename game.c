@@ -57,8 +57,8 @@ int main (void)
 {
     char character[3] = {'P','S','R'};
     char* scroll_screen = "PRESS NAV BUTTON";
-    int i = 0;
-    choice_t player = NONE;
+    bool chosen = false;
+    choice_t player = 0;
     //choice_t opponent = NONE;
 
     system_init ();
@@ -90,28 +90,28 @@ int main (void)
             pacer_wait ();
             tinygl_update ();
 
-            if (player == NONE) { // Untill player has chosen
+            if (chosen == false) { // Untill player has chosen
             /* TODO: Call the navswitch update function.  */
                 navswitch_update ();
 
                 if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                    if (i < 2) {
-                    i += 1;
+                    if (player < 2) {
+                    player += 1;
                     }
                 }
                 /* TODO: Increment character if NORTH is pressed.  */
 
                 if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
-                    if (i > 0) {
-                        i -= 1;
+                    if (player > 0) {
+                        player -= 1;
                     }
                 }
                 /* TODO: Decrement character if SOUTH is pressed.  */
 
-                display_character (character[i]);
+                display_character (character[player]);
 
                if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                    player = i;
+                    chosen = true;
 
                 }
             }
