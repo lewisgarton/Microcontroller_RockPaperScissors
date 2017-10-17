@@ -49,7 +49,7 @@ void my_matrix_init (void)
 }
 
 
-/*Fuction to check the state of the game*/
+/*Function to check the state of the game*/
 bool game_status (int start)
 {
     navswitch_update();
