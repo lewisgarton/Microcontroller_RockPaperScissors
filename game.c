@@ -131,7 +131,6 @@ int main (void)
                 display_character (character[player]);
 
                 if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                    player = i;
                     chosen = true;
 
                 }
