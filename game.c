@@ -53,7 +53,7 @@ void my_matrix_init (void)
 bool game_status (int start)
 {
     navswitch_update();
-    // Checking if the game has started
+    // Game is started by pulling down the navigation button
     if (navswitch_push_event_p (NAVSWITCH_EAST)) {
         start = 1;
         // Clearing the display
@@ -69,12 +69,11 @@ int main (void)
     // Arrays for selecting the game variables
     char character[3] = {'P','S','R'};
     // Scrolling screen text
-    char* scroll_screen = "PRESS NAV BUTTON";
+    char* scroll_screen = "PRESS DOWN BUTTON";
 
-
-    int i = 0;
-    //choice_t opponent = NONE;
-    choice_t player = NONE;
+    
+    bool chosen = false;
+    choice_t player = 0;
 
 
     // Initialising systems
@@ -89,7 +88,7 @@ int main (void)
 
 
     while(1) {
-        
+
         // Checing for the state of the game
         bool start = 0;
         start = game_status(start);
@@ -107,32 +106,31 @@ int main (void)
 
             pacer_wait ();
             tinygl_update ();
-    
+
             // Untill player has chosen
-            if (player == NONE) { 
-                /* TODO: Call the navswitch update function.  */
+            if (chosen == false) {
+                
+                // Checking the navswitch
                 navswitch_update ();
-
+                
+                // Scrolling right in the list 
                 if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                    if (i < 2) {
-                        i += 1;
+                    if (player < 2) {
+                        player += 1;
                     }
                 }
-                /* TODO: Increment character if NORTH is pressed.  */
-
+                
+                // Scrolling left in the list
                 if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
-                    if (i > 0) {
-                        i -= 1;
+                    if (player > 0) {
+                        player -= 1;
                     }
                 }
-                /* TODO: Decrement character if SOUTH is pressed.  */
+                
+                // Showing the current letter in the display
+                display_character (character[player]);
+                
 
-                display_character (character[i]);
-
-                if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                    player = i;
-
-                }
             }
 
         }
