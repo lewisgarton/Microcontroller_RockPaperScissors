@@ -10,6 +10,48 @@
 #define PACER_RATE 500
 #define MESSAGE_RATE 20
 
+/////////////////////////// to be moved to a module (I DONT KNOW WHAT YET)
+// enum for player choice
+typedef enum {
+    ROCK,
+    PAPER,
+    SCISSORS,
+    NONE = 0
+} choice_t;
+
+// enum for result
+typedef enum {
+    WIN,
+    LOSE,
+    DRAW,
+    UNKNOWN = 0
+} result_t;
+
+result_t get_result(choice_t player, choice_t opponent) {
+    result_t result =  UNKNOWN;
+    if (player == opponent) {
+        result = DRAW;
+    } else if (player == ROCK && opponent == SCISSORS) {
+        result = WIN;
+    } else if (player == PAPER && opponent == ROCK){
+        result = WIN;
+    } else if (player == SCISSORS && opponent == PAPER) {
+        result = WIN;
+    } else {
+        result = LOSE;
+    }
+    return result;
+}
+/////////////////////////////
+
+
+
+
+
+
+
+
+
 
 void display_character (char character)
 {
@@ -26,7 +68,7 @@ void display_string (char* message)
     tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
     tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
     tinygl_text_speed_set (MESSAGE_RATE);
-    
+
     tinygl_text (message);
 
 }
@@ -48,7 +90,7 @@ bool game_status (int start)
         start = 1;
         tinygl_clear();
     }
-    
+
     return start;
 }
 
@@ -75,17 +117,17 @@ int main (void)
 
         bool start = 0;
         start = game_status(start);
-        
+
         while (start == 0) {
             navswitch_update();
             pacer_wait ();
             tinygl_update ();
             break;
         }
-        
-        
+
+
         while (start == 1) {
-            
+
             pacer_wait ();
             tinygl_update ();
             navswitch_update ();
@@ -102,12 +144,12 @@ int main (void)
             /* TODO: Decrement character if SOUTH is pressed.  */
 
             display_character (character[i]);
-            
+
            if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                 chosen = i;
-                
+
             }
-            
+
         }
 
     }
