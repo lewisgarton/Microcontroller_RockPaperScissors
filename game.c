@@ -76,6 +76,9 @@ int main (void)
     // Scrolling screen text
     char* scroll_screen = "PRESS DOWN BUTTON";
     char opponent_char;
+    char player_char;
+
+    int i = 1;
 
 
     bool chosen = false;
@@ -114,7 +117,7 @@ int main (void)
         while (start == 1) {
             pacer_wait ();
             tinygl_update ();
-
+            i = 1;
             // Untill player has chosen
             if (chosen == false) {
 
@@ -141,19 +144,29 @@ int main (void)
                 // Checking if the player has choosen
                 if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
                     chosen = true;
+                    // Player choosen chracter
+                    player_char = character[player];
                     // sending the choosen chracter through IR
-                    ir_uart_putc (character[player]);
+                    ir_uart_putc (player_char);
                     tinygl_clear();
+                    i = 0;
                 }
 
-                // Reciving the selection of the opponent
-                if (ir_uart_read_ready_p ()) {
-                    opponent_char = ir_uart_getc ();
-                    display_character (opponent_char);
+                while (i == 0) {
+                    // Reciving the selection of the opponent
+                    if (ir_uart_read_ready_p ()) {
+                        opponent_char = ir_uart_getc ();
+                        tinygl_update();
+                        display_character (opponent_char);
+                        i = 1;
+                    }
+                    
                 }
+
+
 
             }
-            
+
         }
 
 
@@ -161,21 +174,3 @@ int main (void)
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
