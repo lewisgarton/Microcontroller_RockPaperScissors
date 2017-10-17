@@ -71,7 +71,7 @@ int main (void)
     // Scrolling screen text
     char* scroll_screen = "PRESS DOWN BUTTON";
 
-    
+
     bool chosen = false;
     choice_t player = 0;
 
@@ -109,27 +109,32 @@ int main (void)
 
             // Untill player has chosen
             if (chosen == false) {
-                
+
                 // Checking the navswitch
                 navswitch_update ();
-                
-                // Scrolling right in the list 
+
+                // Scrolling right in the list
                 if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
                     if (player < 2) {
                         player += 1;
                     }
                 }
-                
+
                 // Scrolling left in the list
                 if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
                     if (player > 0) {
                         player -= 1;
                     }
                 }
-                
+
                 // Showing the current letter in the display
                 display_character (character[player]);
-                
+
+                if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                    player = i;
+                    chosen = true;
+
+                }
 
             }
 
