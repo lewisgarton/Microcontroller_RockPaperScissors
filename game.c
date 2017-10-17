@@ -5,6 +5,7 @@
 #include "../fonts/font3x5_1.h"
 #include "button.h"
 #include "stdbool.h"
+#include "game_types.h"
 
 
 #define PACER_RATE 500
@@ -57,7 +58,8 @@ int main (void)
     char character[3] = {'P','S','R'};
     char* scroll_screen = "PRESS NAV BUTTON";
     int i = 0;
-    int chosen;
+    choice_t player = NONE;
+    //choice_t opponent = NONE;
 
     system_init ();
 
@@ -87,28 +89,31 @@ int main (void)
 
             pacer_wait ();
             tinygl_update ();
-            navswitch_update ();
+
+            if (player == NONE) { // Untill player has chosen
             /* TODO: Call the navswitch update function.  */
+                navswitch_update ();
 
-            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                if (i < 2) {
-                i += 1;
+                if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+                    if (i < 2) {
+                    i += 1;
+                    }
                 }
-            }
-            /* TODO: Increment character if NORTH is pressed.  */
+                /* TODO: Increment character if NORTH is pressed.  */
 
-            if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
-                if (i > 0) {
-                    i -= 1;
+                if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
+                    if (i > 0) {
+                        i -= 1;
+                    }
                 }
-            }
-            /* TODO: Decrement character if SOUTH is pressed.  */
+                /* TODO: Decrement character if SOUTH is pressed.  */
 
-            display_character (character[i]);
+                display_character (character[i]);
 
-           if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                chosen = i;
+               if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                    player = i;
 
+                }
             }
 
         }
