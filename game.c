@@ -78,10 +78,8 @@ int main (void)
     char opponent_char;
     char player_char;
 
-    int i = 1;
 
 
-    bool chosen = false;
     choice_t player = 0;
 
 
@@ -117,7 +115,7 @@ int main (void)
         while (start == 1) {
             pacer_wait ();
             tinygl_update ();
-            i = 1;
+           
 
 
             // Checking the navswitch
@@ -142,23 +140,23 @@ int main (void)
 
             // Checking if the player has choosen
             if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                chosen = true;
+          
                 // Player choosen chracter
                 player_char = character[player];
                 // sending the choosen chracter through IR
                 ir_uart_putc (player_char);
                 tinygl_clear();
-                i = 0;
+                
             }
 
-            while (i == 0) {
-                // Reciving the selection of the opponent
-                if (ir_uart_read_ready_p ()) {
-                    opponent_char = ir_uart_getc ();
-                    tinygl_update();
-                    display_character (opponent_char);
-                    i = 1;
-                }
+
+            // Reciving the selection of the opponent
+            if (ir_uart_read_ready_p ()) {
+                opponent_char = ir_uart_getc ();
+                tinygl_update();
+                display_character (opponent_char);
+                
+
 
             }
 
