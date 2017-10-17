@@ -6,6 +6,7 @@
 #include "button.h"
 #include "stdbool.h"
 #include "game_types.h"
+#include "ir_uart.h"
 
 
 #define PACER_RATE 500
@@ -59,6 +60,10 @@ bool game_status (int start)
         // Clearing the display
         tinygl_clear();
     }
+    // Game is started by pulling down the navigation button
+    if (navswitch_push_event_p (NAVSWITCH_WEST)) {
+        start = 0;
+    }
 
     return start;
 }
@@ -70,6 +75,7 @@ int main (void)
     char character[3] = {'P','S','R'};
     // Scrolling screen text
     char* scroll_screen = "PRESS DOWN BUTTON";
+    char opponent_char;
 
 
     bool chosen = false;
@@ -82,6 +88,8 @@ int main (void)
     my_matrix_init();
     // Initialising inputs
     navswitch_init();
+    // Initialising ir communication driver
+    ir_uart_init ();
 
     // Displaying the scroll screen
     display_string(scroll_screen);
@@ -93,6 +101,7 @@ int main (void)
         bool start = 0;
         start = game_status(start);
 
+
         // Scrolling startup screen before game starts
         while (start == 0) {
             navswitch_update();
@@ -103,7 +112,6 @@ int main (void)
 
         // Staring the game
         while (start == 1) {
-
             pacer_wait ();
             tinygl_update ();
 
@@ -130,15 +138,25 @@ int main (void)
                 // Showing the current letter in the display
                 display_character (character[player]);
 
+                // Checking if the player has choosen
                 if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                    player = i;
                     chosen = true;
+                    // sending the choosen chracter through IR
+                    ir_uart_putc (character[player]);
+                    tinygl_clear();
+                }
 
+                // Reciving the selection of the opponent
+                if (ir_uart_read_ready_p ()) {
+                    opponent_char = ir_uart_getc ();
+                    display_character (opponent_char);
                 }
 
             }
-
+            
         }
+
+
 
     }
 
