@@ -10,49 +10,6 @@
 #define PACER_RATE 500
 #define MESSAGE_RATE 20
 
-/////////////////////////// to be moved to a module (I DONT KNOW WHAT YET)
-// enum for player choice
-typedef enum {
-    ROCK,
-    PAPER,
-    SCISSORS,
-    NONE = 0
-} choice_t;
-
-// enum for result
-typedef enum {
-    WIN,
-    LOSE,
-    DRAW,
-    UNKNOWN = 0
-} result_t;
-
-result_t get_result(choice_t player, choice_t opponent) {
-    result_t result =  UNKNOWN;
-    if (player == opponent) {
-        result = DRAW;
-    } else if (player == ROCK && opponent == SCISSORS) {
-        result = WIN;
-    } else if (player == PAPER && opponent == ROCK){
-        result = WIN;
-    } else if (player == SCISSORS && opponent == PAPER) {
-        result = WIN;
-    } else {
-        result = LOSE;
-    }
-    return result;
-}
-/////////////////////////////
-
-
-
-
-
-
-
-
-
-
 void display_character (char character)
 {
     char buffer[2];
@@ -134,12 +91,16 @@ int main (void)
             /* TODO: Call the navswitch update function.  */
 
             if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+                if (i < 2) {
                 i += 1;
+                }
             }
             /* TODO: Increment character if NORTH is pressed.  */
 
             if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
-                i -= 1;
+                if (i > 0) {
+                    i -= 1;
+                }
             }
             /* TODO: Decrement character if SOUTH is pressed.  */
 
