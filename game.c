@@ -118,54 +118,53 @@ int main (void)
             pacer_wait ();
             tinygl_update ();
             i = 1;
-            // Untill player has chosen
-            if (chosen == false) {
 
-                // Checking the navswitch
-                navswitch_update ();
 
-                // Scrolling right in the list
-                if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                    if (player < 2) {
-                        player += 1;
-                    }
+            // Checking the navswitch
+            navswitch_update ();
+
+            // Scrolling right in the list
+            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+                if (player < 2) {
+                    player += 1;
                 }
+            }
 
-                // Scrolling left in the list
-                if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
-                    if (player > 0) {
-                        player -= 1;
-                    }
+            // Scrolling left in the list
+            if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
+                if (player > 0) {
+                    player -= 1;
                 }
+            }
 
-                // Showing the current letter in the display
-                display_character (character[player]);
+            // Showing the current letter in the display
+            display_character (character[player]);
 
-                // Checking if the player has choosen
-                if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                    chosen = true;
-                    // Player choosen chracter
-                    player_char = character[player];
-                    // sending the choosen chracter through IR
-                    ir_uart_putc (player_char);
-                    tinygl_clear();
-                    i = 0;
+            // Checking if the player has choosen
+            if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                chosen = true;
+                // Player choosen chracter
+                player_char = character[player];
+                // sending the choosen chracter through IR
+                ir_uart_putc (player_char);
+                tinygl_clear();
+                i = 0;
+            }
+
+            while (i == 0) {
+                // Reciving the selection of the opponent
+                if (ir_uart_read_ready_p ()) {
+                    opponent_char = ir_uart_getc ();
+                    tinygl_update();
+                    display_character (opponent_char);
+                    i = 1;
                 }
-
-                while (i == 0) {
-                    // Reciving the selection of the opponent
-                    if (ir_uart_read_ready_p ()) {
-                        opponent_char = ir_uart_getc ();
-                        tinygl_update();
-                        display_character (opponent_char);
-                        i = 1;
-                    }
-                    
-                }
-
-
 
             }
+
+
+
+
 
         }
 
