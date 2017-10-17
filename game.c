@@ -10,66 +10,119 @@
 #define MESSAGE_RATE 20
 
 
-
-void print_matrix (char* message)
+void display_character (char character)
 {
-    // Initialising the led matrix scroling
-    
-    tinygl_font_set (&font3x5_1);
-    tinygl_text_speed_set (MESSAGE_RATE);
-    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
-    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
-    
-    tinygl_text(message);
+    char buffer[2];
+
+    buffer[0] = character;
+    buffer[1] = '\0';
+    tinygl_text (buffer);
 }
 
-
-
-/*
-int game_status (int start)
+void display_string (char* message)
 {
-    while (start == 0) {
-        pacer_wait ();
-        navswitch_update ();
+    tinygl_font_set (&font3x5_1);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
+    tinygl_text_speed_set (MESSAGE_RATE);
+    
+    tinygl_text (message);
 
-        if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-            start = 1;
-        }
+}
+
+void my_matrix_init (void)
+{
+    tinygl_init (PACER_RATE);
+    tinygl_font_set (&font3x5_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
+    tinygl_text_dir_set (TINYGL_TEXT_DIR_ROTATE);
+
+    pacer_init (PACER_RATE);
+}
+
+bool game_status (int start)
+{
+    navswitch_update();
+    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+        start = 1;
     }
     return start;
 }
-*/
+
 
 int main (void)
 {
-    system_init ();
-    tinygl_init (PACER_RATE);
-    pacer_init (PACER_RATE);
-    
-    // Initialising the nav switch
-
-    navswitch_init ();
-
-
+    char character[3] = {'P','S','R'};
     char* scroll_screen = "PRESS NAV BUTTON";
+    int i = 0;
 
-/*
-    // checking the game status
-    int start = 0;
-    start = game_status(start);
-*/
+    system_init ();
 
-    print_matrix(scroll_screen);
+    /* Initialise display driver.  */
+    my_matrix_init();
 
-    while (1) {
+    navswitch_init();
+    /* TODO: Initialise navigation switch driver.  */
+
+    display_string(scroll_screen);
+
+    while(1) {
+
+
+        bool start = 0;
+        start = game_status(start);
         
         
-        pacer_wait();
-        tinygl_update();
-        navswitch_update ();
-       
         
+        
+        navswitch_update();
+        
+        while (start == 0) {
+            pacer_wait ();
+            tinygl_update ();
+            break;
+        }
+        
+        
+        
+        while (start == 1) {
+            
+            pacer_wait ();
+            tinygl_update ();
+            navswitch_update ();
+            /* TODO: Call the navswitch update function.  */
 
+            if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+                i += 1;
+            }
+            /* TODO: Increment character if NORTH is pressed.  */
+
+            if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
+                i -= 1;
+            }
+            /* TODO: Decrement character if SOUTH is pressed.  */
+
+            display_character (character[i]);
+        }
 
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
