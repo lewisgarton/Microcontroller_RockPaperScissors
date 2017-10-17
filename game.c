@@ -6,6 +6,7 @@
 #include "button.h"
 #include "stdbool.h"
 
+
 #define PACER_RATE 500
 #define MESSAGE_RATE 20
 
@@ -43,9 +44,11 @@ void my_matrix_init (void)
 bool game_status (int start)
 {
     navswitch_update();
-    if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+    if (navswitch_push_event_p (NAVSWITCH_EAST)) {
         start = 1;
+        tinygl_clear();
     }
+    
     return start;
 }
 
@@ -55,6 +58,7 @@ int main (void)
     char character[3] = {'P','S','R'};
     char* scroll_screen = "PRESS NAV BUTTON";
     int i = 0;
+    int chosen;
 
     system_init ();
 
@@ -72,17 +76,12 @@ int main (void)
         bool start = 0;
         start = game_status(start);
         
-        
-        
-        
-        navswitch_update();
-        
         while (start == 0) {
+            navswitch_update();
             pacer_wait ();
             tinygl_update ();
             break;
         }
-        
         
         
         while (start == 1) {
@@ -103,6 +102,12 @@ int main (void)
             /* TODO: Decrement character if SOUTH is pressed.  */
 
             display_character (character[i]);
+            
+           if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+                chosen = i;
+                
+            }
+            
         }
 
     }
