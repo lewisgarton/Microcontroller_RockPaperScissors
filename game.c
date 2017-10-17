@@ -66,9 +66,19 @@ int main (void)
     char character[3] = {'P','S','R'};
     // Scrolling screen text
     char* scroll_screen = "PRESS DOWN BUTTON";
+<<<<<<< HEAD
 
     bool chosen = false;
     int player = 0;
+=======
+    char opponent_char;
+    char player_char;
+
+
+
+    choice_t player = 0;
+
+>>>>>>> cb5ab76d03e8ea2de4a585c3772e7ff7f693e186
 
     // Initialising systems
     system_init ();
@@ -105,7 +115,11 @@ int main (void)
 
             pacer_wait ();
             tinygl_update ();
+<<<<<<< HEAD
             navswitch_update ();
+=======
+           
+>>>>>>> cb5ab76d03e8ea2de4a585c3772e7ff7f693e186
 
             // Untill player has chosen
             if (chosen == false) {
@@ -125,6 +139,7 @@ int main (void)
                     }
                 }
 
+<<<<<<< HEAD
                 // Showing the current letter in the display
                 display_character (character[player]);
 
@@ -134,6 +149,30 @@ int main (void)
                     tinygl_clear();
 
                 }
+=======
+            // Showing the current letter in the display
+            display_character (character[player]);
+
+            // Checking if the player has choosen
+            if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+          
+                // Player choosen chracter
+                player_char = character[player];
+                // sending the choosen chracter through IR
+                ir_uart_putc (player_char);
+                tinygl_clear();
+                
+            }
+
+
+            // Reciving the selection of the opponent
+            if (ir_uart_read_ready_p ()) {
+                opponent_char = ir_uart_getc ();
+                tinygl_update();
+                display_character (opponent_char);
+                
+
+>>>>>>> cb5ab76d03e8ea2de4a585c3772e7ff7f693e186
 
             }
 
