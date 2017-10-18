@@ -7,10 +7,12 @@
 #include "stdbool.h"
 #include "game_types.h"
 #include "ir_uart.h"
+#include "game_helper.c"
+#include "uint8toa.h"
 
-
-#define PACER_RATE 500
+#define PACER_RATE 600
 #define MESSAGE_RATE 20
+
 
 
 /* Function to display the input character in the matrix */
@@ -59,16 +61,95 @@ bool game_status (int start)
     return start;
 }
 
+void choose_selection(state_t* game_state)
+{
+    navswitch_update ();
+    if (game_state->selection_final == false) {
+
+        // Scrolling right in the list
+        if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
+            if (game_state->selection < 'S') {
+                // Jump 2 if q, this needs to be changed once p,r,s defined as macros
+                game_state->selection++;
+                if(game_state->selection == 'Q') {
+                    game_state->selection++;
+                }
+            }
+        }
+
+        // Scrolling left in the list
+        if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
+            if (game_state->selection > 'P') {
+                // Jump 2 if q, this needs to be changed once p,r,s defined as macros
+                game_state->selection--;
+                if(game_state->selection == 'Q') {
+                    game_state->selection--;
+                }
+            }
+        }
+
+        // Showing the current letter in the display
+        display_character (game_state->selection);
+
+        if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
+            game_state->selection_final = true;
+            tinygl_clear();
+        }
+    }
+}
+
+// Send message
+void snd_ir(uint8_t message)
+{
+    if(ir_uart_write_ready_p()) {
+        ir_uart_putc(message);
+    }
+}
+
+
+// Recieve message, if none return 0 else return ascii
+uint8_t rcv_ir(void)
+{
+    uint8_t recived = 0;
+    if(ir_uart_read_ready_p()) {
+        recived = ir_uart_getc();
+    }
+    return recived;
+
+}
+
+
+
+void get_result(state_t* state) {
+    if(state->result == 0) {
+        char result;
+        if (state->selection == state->opponent) {
+            result = 'D';
+        } else if (state->selection == 'R' && state->opponent == 'S') {
+            result = 'W';
+        } else if (state->selection == 'P' && state->opponent == 'R'){
+            result = 'W';
+        } else if (state->selection == 'S' && state->opponent == 'P') {
+            result = 'W';
+        } else {
+            result = 'L';
+        }
+        state->result = result;
+        state->result_set = true;
+    }
+}
+
+
+
 
 int main (void)
 {
-    // Arrays for selecting the game variables
-    char character[3] = {'P','S','R'};
-    // Scrolling screen text
-    char* scroll_screen = "PRESS DOWN BUTTON";
 
-    bool chosen = false;
-    int player = 0;
+    uint16_t tick = 0;
+    // Arrays for selecting the game variables
+    // Scrolling screen text
+    char* scroll_screen = "SELECT PLAYER PRESS DOWN BUTTON";
+    //bool chosen = false;
 
     // Initialising systems
     system_init ();
@@ -82,11 +163,19 @@ int main (void)
     // Displaying the scroll screen
     display_string(scroll_screen);
 
-    uint8_t ch = -1;
-    bool rcv = false;
-    bool snd = false;
-    while(1) {
 
+    void get_opponent(state_t* game_state){
+        uint8_t read_choice;
+        read_choice = rcv_ir();
+        if(read_choice == 'R' || read_choice == 'S' || read_choice == 'P') {
+            game_state->opponent = read_choice;
+        }
+    }
+
+
+
+    state_t game_state = {0,'P',0,false,0,0,0,false};
+    while(1) {
         // Checing for the state of the game
         bool start = 0;
         start = game_status(start);
@@ -99,70 +188,36 @@ int main (void)
             tinygl_update ();
             break;
         }
-
+        game_state.player = 0; ////////////////////////////////////////////////
         // Staring the game
         while (start == 1) {
-
             pacer_wait ();
             tinygl_update ();
-            navswitch_update ();
 
-            // Untill player has chosen
-            if (chosen == false) {
+            choose_selection(&game_state);
 
-
-                // Scrolling right in the list
-                if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
-                    if (player < 2) {
-                        player += 1;
-                    }
-                }
-
-                // Scrolling left in the list
-                if (navswitch_push_event_p (NAVSWITCH_SOUTH)) {
-                    if (player > 0) {
-                        player -= 1;
-                    }
-                }
-
-                // Showing the current letter in the display
-                display_character (character[player]);
-
-                if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
-                    chosen = true;
-
-                    tinygl_clear();
-
-                }
-
+            if(!game_state.selection_final) {
+                continue;
             }
 
-                if(rcv == false && chosen == true) {
-                    if(ir_uart_read_ready_p()) {
-                        ch = ir_uart_getc();
-                        display_character (ch);
-                        rcv = true;
-
-                    }
-                }
-                if(snd == false && chosen == true) {
-                    if(ir_uart_write_ready_p()) {
-                        ir_uart_putc(temp);
-                        if (ir_uart_write_finished_p()) {
-                            snd = true;
-                        }
-                    }
-                }
+            get_opponent(&game_state);
 
 
 
 
 
+            tick++;
+            if (tick > PACER_RATE / MESSAGE_RATE) {
+                tick = 0;
+                snd_ir(game_state.selection);
 
-
+                if(game_state.opponent != 0) {
+                get_result(&game_state);
+                if(game_state.result_set == true) display_character(game_state.result);
+            }
+            }
 
         }
-
     }
 
 }
