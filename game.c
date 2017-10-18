@@ -1,3 +1,12 @@
+/** @file   game.c
+    @authors Janitha Gunathhilake, Lewis Garton
+    @date   19 Oct 2017
+    @brief  Main program to run the paper, scissors, rock game
+    
+    initializes required programs/modules and exacutes the  paper, 
+    * scissors, rock game.
+*/
+
 #include "system.h"
 #include "pacer.h"
 #include "navswitch.h"
@@ -12,7 +21,6 @@
 
 #define PACER_RATE 600
 #define MESSAGE_RATE 20
-
 
 
 /* Function to display the input character in the matrix */
@@ -31,7 +39,6 @@ void display_string (char* message)
 {
     // Sending the messasge to the display
     tinygl_text (message);
-
 }
 
 /*Initialising the matrix display*/
@@ -61,6 +68,8 @@ bool game_status (int start)
     return start;
 }
 
+// Function to scroll through the game variable list and 
+// select the game variable
 void choose_selection(state_t* game_state)
 {
     navswitch_update ();
@@ -90,15 +99,17 @@ void choose_selection(state_t* game_state)
 
         // Showing the current letter in the display
         display_character (game_state->selection);
-
+        
+        // Checking if a game variable is choosen
         if (navswitch_push_event_p (NAVSWITCH_PUSH)) {
             game_state->selection_final = true;
+
             tinygl_clear();
         }
     }
 }
 
-// Send message
+// Function to send message
 void snd_ir(uint8_t message)
 {
     if(ir_uart_write_ready_p()) {
@@ -107,7 +118,7 @@ void snd_ir(uint8_t message)
 }
 
 
-// Recieve message, if none return 0 else return ascii
+// Function to recieve message, if none return 0 else return ascii
 uint8_t rcv_ir(void)
 {
     uint8_t recived = 0;
@@ -119,7 +130,8 @@ uint8_t rcv_ir(void)
 }
 
 
-
+// Function to get the results of the game 
+// and decide winner, looser or draw
 void get_result(state_t* state) {
     if(state->result == 0) {
         char result;
@@ -147,23 +159,20 @@ int main (void)
 
     uint16_t tick = 0;
     // Arrays for selecting the game variables
+    
     // Scrolling screen text
     char* scroll_screen = "SELECT PLAYER PRESS DOWN BUTTON";
-    //bool chosen = false;
 
-    // Initialising systems
+    // Initialising all systems
     system_init ();
-    // Initialising display driver
     my_matrix_init();
-    // Initialising inputs
     navswitch_init();
-
     ir_uart_init ();
 
     // Displaying the scroll screen
     display_string(scroll_screen);
 
-
+    // Function to get opponents game state
     void get_opponent(state_t* game_state){
         uint8_t read_choice;
         read_choice = rcv_ir();
@@ -173,8 +182,9 @@ int main (void)
     }
 
 
-
+    // Game states
     state_t game_state = {0,'P',0,false,0,0,0,false};
+    
     while(1) {
         // Checing for the state of the game
         bool start = 0;
