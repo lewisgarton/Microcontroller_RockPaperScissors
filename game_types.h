@@ -1,10 +1,17 @@
+/** @file   game_type.h
+    @authors  Lewis Garton, Janitha Gunathhilake
+    @date   19 Oct 2017
+    @brief  Include structures for the game states
 
+
+    This module implements simple structures for the game states
+    * and game results. Which is used by the main program to dermine
+    * the state of the game. 
+*/
 
 
 #ifndef GAME_TYPES_H
 #define GAME_TYPES_H
-
-
 
 
 // struct for game state, 'N' indicates unselected
@@ -19,7 +26,7 @@ typedef struct{
     bool result_set;
 } state_t;
 
-
+// enums for the player variables
 typedef enum {
     PAPER = 0,
     SCISSORS = 1,
