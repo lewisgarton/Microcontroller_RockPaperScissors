@@ -1,0 +1,14 @@
+Running make in this directory will compile the main program and the required modules and upload the game to the UCFK.
+
+To play the game first move the navigation switch to either NORTH or SOUTH. This will terminate the scrolling instruction display.
+
+Game variables can be choosen by iterating through the displayed list containing
+Paper, scissors, Rock using the NORT and SOUTH buttons of the navigation switch.
+
+Once the choice of game variable is visible in the display, that choice can be finalised by pressing down on the navigation switch.
+
+The IR communication module will exchange the player choices and compare them to determine the winner, looser or if the game was a draw.
+
+Once the winner, looser or draw is determined, apropriate message discribing the winner or looser will be visible on the UCFK display. 
+
+
