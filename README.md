@@ -1,10 +1,10 @@
-##Overview
+## Overview
 
 This program complies and run a paper, scissor, rock game on a ATmega32u2 microcontroller. The purpose of this 
 game is to select a game variable from the given list and beat the other player. Each game variable is a given weight 
 and the program compare these to decide the winner. 
 
-##Game instructions
+## Game instructions
 
 To play the game first move the navigation switch to either EAST or WEST. This will terminate the scrolling
 instruction display and give a choice to select the player number. To select the player number use the 
@@ -20,7 +20,7 @@ The IR communication module will exchange the player choices and compare them to
 Once the winner, looser or draw is determined, apropriate message discribing the winner or looser will be visible on the UCFK display. 
 
 
-##Authors
+## Authors
 
 Janitha Gunathilake
 Lewis Garton
