@@ -17,10 +17,10 @@
 // struct for game state, 'N' indicates unselected
 typedef struct{
     uint8_t player;
-    uint8_t selection;
-    uint8_t opponent;
+    uint8_t player_selection;
+    uint8_t opponent_selection;
     bool selection_final;
-    uint8_t result;
+    uint8_t round_result;
     int score;
     uint8_t confirm_selection;
     bool result_set;
