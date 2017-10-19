@@ -5,6 +5,7 @@ game is to select a game variable from the given list and beat the other player.
 and the program compare these to decide the winner. 
 
 ## Game instructions
+To upload the game to the UCFK simply compile and upload the game in to UCFK by typing the command "make program" in the terminal. 
 
 To play the game first move the navigation switch to either EAST or WEST. This will terminate the scrolling
 instruction display and give a choice to select the player number. To select the player number use the 
@@ -18,6 +19,9 @@ Once the choice of game variable is visible in the display, that choice can be f
 The IR communication module will exchange the player choices and compare them to determine the winner, looser or if the game was a draw.
 
 Once the winner, looser or draw is determined, apropriate message discribing the winner or looser will be visible on the UCFK display. 
+
+To replay the game simply press down on the navigation switch. This will display the game variable selection menu and the desired game 
+variable can be choose.
 
 
 ## Authors
