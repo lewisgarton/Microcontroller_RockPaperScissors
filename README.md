@@ -25,7 +25,7 @@ Once the winner, looser or draw is determined, apropriate message discribing the
 Janitha Gunathilake
 Lewis Garton
 
-##Date
+## Date
 
 19 Oct 2017
 
