@@ -1,7 +1,7 @@
 /** @file   game_type.h
     @authors  Lewis Garton, Janitha Gunathhilake
     @date   19 Oct 2017
-    @brief  Include structures for the game states
+    @brief  Include structures and macros for the game states
 
 
     This module implements simple structures for the game states
@@ -13,6 +13,29 @@
 #ifndef GAME_TYPES_H
 #define GAME_TYPES_H
 
+#define PACER_RATE 300
+#define MESSAGE_RATE 10
+#define TEXT_SPEED 30
+
+
+// Game State defaults
+#define INIT_ZERO 0
+#define FALSE false
+#define TRUE true
+
+
+// Game logic
+#define NUMBER_OF_CHOICES 3
+#define ROCK 'R'
+#define PAPER 'P'
+#define SCISSORS 'S'
+#define NUMBER_OF_RESULTS 3
+#define WIN 'W'
+#define LOSE 'L'
+#define DRAW 'D'
+#define PLAYER_ONE '1'
+#define PLAYER_TWO '2'
+
 
 // struct for game state, 'N' indicates unselected
 typedef struct{
@@ -21,28 +44,13 @@ typedef struct{
     uint8_t opponent_selection;
     bool selection_final;
     uint8_t round_result;
-    int score;
     uint8_t confirm_selection;
     bool result_set;
     bool sent;
     bool game_over;
     bool player_selected;
+    bool game_started;
 } state_t;
 
-// enums for the player variables
-typedef enum {
-    PAPER = 0,
-    SCISSORS = 1,
-    ROCK = 2,
-    NONE = -1
-} choice_t;
-
-// enum for result
-typedef enum {
-    WIN,
-    LOSE,
-    DRAW,
-    UNKNOWN = -1
-} result_t;
 
 #endif

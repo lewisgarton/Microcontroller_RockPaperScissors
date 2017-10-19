@@ -1,31 +1,27 @@
-/** @file   game_type.h
+/** @file   communication.h
     @authors  Lewis Garton, Janitha Gunathhilake
     @date   19 Oct 2017
-    @brief  Include structures for the game states
+    @brief  Provides comunications funcions
 
 
-    This module implements simple structures for the game states
-    * and game results. Which is used by the main program to dermine
-    * the state of the game. 
+    This module implements simple communication functions required to 
+    * run the state of the game. 
 */
 
-#include "stdbool.h"
+
 #include "ir_uart.h"
 
 
-#define TRUE true
-#define FALSE false
-
 /* Sends a given message, if successful returns true */
-bool send_char (char message)
+int send_char (char message)
 {
-	bool flag = FALSE;
+	int flag = 0;
 	if (ir_uart_write_ready_p()) {
 		ir_uart_putc(message);
 	}
 
     if (ir_uart_write_finished_p()) {
-		flag = TRUE;
+		flag = 1;
     }
     return flag;
 }
@@ -43,4 +39,45 @@ char receive_char (void)
 }
 
 
+/* Checks to see if a recieved character is what is expected*/
+int receive_expected_char (int* character, char expected_list[], int list_length)
+{
+	int flag = 0;
+	char received = receive_char();
+	
+	if (received) {
+		int i;
+		for (i = 0; i < list_length; i++) 
+		{
+			if (received == expected_list[i]) {
+				*character = received;
+				flag = 1;
+			}
+		}
+	}
+	return flag;
+	
+}
 
+
+/* Gets the opponents choice */
+void get_opponent(state_t* game_state)
+{
+    int result_received = INIT_ZERO;
+	char expected[NUMBER_OF_CHOICES] = {ROCK, PAPER, SCISSORS};
+	if (receive_expected_char (&result_received, expected , NUMBER_OF_CHOICES)) {
+		game_state->opponent_selection = result_received;
+	}
+}
+
+
+// Function to check if the results been received
+void ir_rcv_result(state_t* game_state)
+{
+	int result_received = INIT_ZERO;
+	char expected[NUMBER_OF_RESULTS] = {WIN, LOSE, DRAW};
+	if (receive_expected_char (&result_received, expected , NUMBER_OF_RESULTS)) {
+		game_state->round_result = result_received;
+        game_state->result_set = true;
+	}
+}
